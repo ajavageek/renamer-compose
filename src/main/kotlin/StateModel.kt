@@ -1,11 +1,23 @@
+import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.State
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.mutableStateOf
 import java.io.File
 
-class StateModel {
+class StateModel(tracker: MutableState<Boolean>) {
 
     private val pathState = mutableStateOf(System.getProperty("user.home"))
     private val patternState = mutableStateOf("")
     private val replacementState = mutableStateOf("")
+    private val filesState: State<List<File>> = derivedStateOf {
+        tracker.value
+        File(path).listFiles()
+            ?.filter { !it.isHidden && it.isFile }
+            ?.toList()
+            ?.sortedBy { it.name }
+            ?: emptyList()
+    }
+
 
     var path: String
         get() = pathState.value
@@ -26,11 +38,7 @@ class StateModel {
         }
 
     val files: List<File>
-        get() = File(path).listFiles()
-            ?.filter { !it.isHidden && it.isFile }
-            ?.toList()
-            ?.sortedBy { it.name }
-            ?: emptyList()
+        get() = filesState.value
 
     val candidates: List<File>
         get() {

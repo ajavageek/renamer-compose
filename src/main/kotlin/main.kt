@@ -25,9 +25,9 @@ fun main() = Window("Renamer Composer") {
 
             val padding = Modifier.padding(10.dp)
 
-            val state = remember { StateModel() }
+            val tracker = remember { mutableStateOf(false) }
+            val state = remember { StateModel(tracker) }
 
-            val counter = remember { mutableStateOf(false) }
             // model now accepts the wrapped types, not State<T>.
             // We use the LaunchedEffect below to scope a subscription that pushes updates to it.
             val model = remember { FileTableModel(state.files, state.candidates) }
@@ -60,7 +60,7 @@ fun main() = Window("Renamer Composer") {
                 SwingPanel(scrollingTable)
             }
             Row(Modifier.align(Alignment.End)) {
-                ApplyButton(state, counter, padding)
+                ApplyButton(state, tracker, padding)
             }
         }
     }

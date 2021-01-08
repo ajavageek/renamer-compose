@@ -7,7 +7,7 @@ import androidx.compose.ui.Modifier
 @Composable
 fun ApplyButton(
     state: StateModel,
-    refresh: MutableState<Boolean>,
+    tracker: MutableState<Boolean>,
     modifier: Modifier
 ) {
     val rename = {
@@ -22,7 +22,7 @@ fun ApplyButton(
             }
         }
         if (renamed) {
-            val (currentRefresh, setRefresh) = refresh
+            val (currentRefresh, setRefresh) = tracker
             setRefresh(currentRefresh.not())
         }
     }
