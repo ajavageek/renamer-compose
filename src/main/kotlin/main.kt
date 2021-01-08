@@ -28,9 +28,8 @@ fun main() = Window("Renamer Composer") {
             val tracker = remember { mutableStateOf(false) }
             val state = remember { StateModel(tracker) }
 
-            // model now accepts the wrapped types, not State<T>.
             // We use the LaunchedEffect below to scope a subscription that pushes updates to it.
-            val model = remember { FileTableModel(state.files, state.candidates) }
+            val fileModel = remember { FileTableModel() }
 
             Row {
                 Text("Folder:", padding)
@@ -45,18 +44,14 @@ fun main() = Window("Renamer Composer") {
             }
             Row(padding.fillMaxWidth().fillMaxHeight(0.85f)) {
                 // Monitor candidates and notify the model of updates
-                LaunchedEffect(model) {
+                LaunchedEffect(fileModel) {
                     // snapshotFlow runs the block and emits its result whenever
                     // any snapshot state read by the block was changed.
                     snapshotFlow { Pair(state.files, state.candidates) }
-                        .collect {
-                            model.files = it.first
-                            model.candidates = it.second
-                            model.fireTableDataChanged()
-                        }
+                        .collect { fileModel.files = it }
                 }
                 // Don't recreate the swing UI elements on every recomposition
-                val scrollingTable = remember(model) { JScrollPane(FileTable(model)) }
+                val scrollingTable = remember(fileModel) { JScrollPane(FileTable(fileModel)) }
                 SwingPanel(scrollingTable)
             }
             Row(Modifier.align(Alignment.End)) {

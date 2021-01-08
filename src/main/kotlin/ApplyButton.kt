@@ -19,7 +19,7 @@ fun ApplyButton(
                 renamed = true
             }
         }
-        if (renamed) state.refresh()
+        if (renamed) state.recompose()
     }
     Button(
         content = { Text("Apply") },

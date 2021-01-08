@@ -51,7 +51,7 @@ class StateModel(private val tracker: MutableState<Boolean>) {
             }
         }
 
-    fun refresh() {
+    fun recompose() {
         val (currentRefresh, setRefresh) = tracker
         setRefresh(currentRefresh.not())
     }

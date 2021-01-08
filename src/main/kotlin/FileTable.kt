@@ -1,4 +1,3 @@
-import androidx.compose.runtime.Composable
 import java.awt.Color.LIGHT_GRAY
 import java.awt.Color.YELLOW
 import java.io.File
@@ -33,9 +32,15 @@ class FileTable(model: AbstractTableModel) : JTable(model) {
     }
 }
 
-class FileTableModel(var files: List<File>, var candidates: List<File>): AbstractTableModel() {
+class FileTableModel() : AbstractTableModel() {
 
-    override fun getRowCount() = files.size
+    var files: Pair<List<File>, List<File>> = emptyList<File>() to emptyList()
+        set(value) {
+            field = value
+            fireTableDataChanged()
+        }
+
+    override fun getRowCount() = files.first.size
     override fun getColumnCount() = 2
 
     override fun getColumnName(column: Int) = when (column) {
@@ -45,8 +50,8 @@ class FileTableModel(var files: List<File>, var candidates: List<File>): Abstrac
 
     override fun getValueAt(row: Int, column: Int): String {
         return when (column) {
-            0 -> files[row].name
-            else -> candidates[row].name
+            0 -> files.first[row].name
+            else -> files.second[row].name
         }
     }
 }
