@@ -2,7 +2,6 @@ import androidx.compose.desktop.DesktopTheme
 import androidx.compose.desktop.SwingPanel
 import androidx.compose.desktop.Window
 import androidx.compose.foundation.layout.*
-import androidx.compose.material.Text
 import androidx.compose.runtime.ExperimentalComposeApi
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
@@ -12,7 +11,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.flow.collect
 import javax.swing.JScrollPane
-
 
 @ExperimentalComposeApi
 fun main() = Window("Renamer Composer") {
@@ -25,14 +23,11 @@ fun main() = Window("Renamer Composer") {
             val state = remember { StateModel() }
 
             Row {
-                Text("Folder:", padding)
                 DirectoryTextField(state, padding.weight(1f, true))
                 FolderPickerButton(state, padding)
             }
             Row {
-                Text("Pattern:", padding)
                 PatternTextField(state, padding.weight(0.5f, true))
-                Text("Replacement:", padding)
                 ReplacementTextField(state, padding.weight(0.5f, true))
             }
             Row(padding.fillMaxWidth().fillMaxHeight(0.85f)) {

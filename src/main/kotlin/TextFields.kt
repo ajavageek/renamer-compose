@@ -1,3 +1,4 @@
+import androidx.compose.material.Text
 import androidx.compose.material.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -8,6 +9,7 @@ fun DirectoryTextField(state: StateModel, modifier: Modifier) {
         value = state.path,
         onValueChange = { state.path = it },
         modifier = modifier,
+        label = { Text("Folder") },
     )
 }
 
@@ -17,6 +19,7 @@ fun PatternTextField(state: StateModel, modifier: Modifier) {
         value = state.pattern,
         onValueChange = { state.pattern = it },
         modifier = modifier,
+        label = { Text("Pattern") },
     )
 }
 
@@ -26,5 +29,6 @@ fun ReplacementTextField(state: StateModel, modifier: Modifier) {
         value = state.replacement,
         onValueChange = { state.replacement = it },
         modifier = modifier,
+        label = { Text("Replacement") },
     )
 }
