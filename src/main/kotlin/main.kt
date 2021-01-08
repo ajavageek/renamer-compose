@@ -60,7 +60,7 @@ fun main() = Window("Renamer Composer") {
                 SwingPanel(scrollingTable)
             }
             Row(Modifier.align(Alignment.End)) {
-                ApplyButton(state, tracker, padding)
+                ApplyButton(state, padding)
             }
         }
     }

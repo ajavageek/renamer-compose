@@ -1,13 +1,11 @@
 import androidx.compose.material.Button
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableState
 import androidx.compose.ui.Modifier
 
 @Composable
 fun ApplyButton(
     state: StateModel,
-    tracker: MutableState<Boolean>,
     modifier: Modifier
 ) {
     val rename = {
@@ -21,10 +19,7 @@ fun ApplyButton(
                 renamed = true
             }
         }
-        if (renamed) {
-            val (currentRefresh, setRefresh) = tracker
-            setRefresh(currentRefresh.not())
-        }
+        if (renamed) state.refresh()
     }
     Button(
         content = { Text("Apply") },

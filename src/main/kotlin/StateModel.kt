@@ -4,7 +4,7 @@ import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.mutableStateOf
 import java.io.File
 
-class StateModel(tracker: MutableState<Boolean>) {
+class StateModel(private val tracker: MutableState<Boolean>) {
 
     private val pathState = mutableStateOf(System.getProperty("user.home"))
     private val patternState = mutableStateOf("")
@@ -17,7 +17,6 @@ class StateModel(tracker: MutableState<Boolean>) {
             ?.sortedBy { it.name }
             ?: emptyList()
     }
-
 
     var path: String
         get() = pathState.value
@@ -51,4 +50,9 @@ class StateModel(tracker: MutableState<Boolean>) {
                 }
             }
         }
+
+    fun refresh() {
+        val (currentRefresh, setRefresh) = tracker
+        setRefresh(currentRefresh.not())
+    }
 }
