@@ -5,18 +5,15 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.material.Text
 import androidx.compose.runtime.ExperimentalComposeApi
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.snapshots.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import kotlinx.coroutines.InternalCoroutinesApi
 import kotlinx.coroutines.flow.collect
 import javax.swing.JScrollPane
 
 
-@InternalCoroutinesApi
 @ExperimentalComposeApi
 fun main() = Window("Renamer Composer") {
 
@@ -25,11 +22,7 @@ fun main() = Window("Renamer Composer") {
 
             val padding = Modifier.padding(10.dp)
 
-            val tracker = remember { mutableStateOf(false) }
-            val state = remember { StateModel(tracker) }
-
-            // We use the LaunchedEffect below to scope a subscription that pushes updates to it.
-            val fileModel = remember { FileTableModel() }
+            val state = remember { StateModel() }
 
             Row {
                 Text("Folder:", padding)
@@ -43,6 +36,8 @@ fun main() = Window("Renamer Composer") {
                 ReplacementTextField(state, padding.weight(0.5f, true))
             }
             Row(padding.fillMaxWidth().fillMaxHeight(0.85f)) {
+                // We use the LaunchedEffect below to scope a subscription that pushes updates to it.
+                val fileModel = FileTableModel()
                 // Monitor candidates and notify the model of updates
                 LaunchedEffect(fileModel) {
                     // snapshotFlow runs the block and emits its result whenever

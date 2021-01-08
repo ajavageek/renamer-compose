@@ -1,11 +1,11 @@
-import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.State
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.mutableStateOf
 import java.io.File
 
-class StateModel(private val tracker: MutableState<Boolean>) {
+class StateModel {
 
+    private val tracker = mutableStateOf(false)
     private val pathState = mutableStateOf(System.getProperty("user.home"))
     private val patternState = mutableStateOf("")
     private val replacementState = mutableStateOf("")
