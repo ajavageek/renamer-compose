@@ -1,4 +1,5 @@
 import androidx.compose.runtime.mutableStateOf
+import java.io.File
 
 class StateModel {
 
@@ -22,5 +23,24 @@ class StateModel {
         get() = replacementState.value
         set(value) {
             replacementState.value = value
+        }
+
+    val files: List<File>
+        get() = File(path).listFiles()
+            ?.filter { !it.isHidden && it.isFile }
+            ?.toList()
+            ?.sortedBy { it.name }
+            ?: emptyList()
+
+    val candidates: List<File>
+        get() {
+            val regex = pattern.toRegex()
+            return files.map {
+                if (pattern.isBlank()) it
+                else {
+                    val newName = regex.replace(it.name, replacement)
+                    File(it.parent, newName)
+                }
+            }
         }
 }

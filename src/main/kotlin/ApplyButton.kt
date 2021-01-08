@@ -2,21 +2,18 @@ import androidx.compose.material.Button
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.State
 import androidx.compose.ui.Modifier
-import java.io.File
 
 @Composable
 fun ApplyButton(
-    files: State<List<File>>,
-    candidates: State<List<File>>,
+    state: StateModel,
     refresh: MutableState<Boolean>,
     modifier: Modifier
 ) {
     val rename = {
         var renamed = false
-        files.value.forEachIndexed { index, file ->
-            val candidate = candidates.value[index]
+        state.files.forEachIndexed { index, file ->
+            val candidate = state.candidates[index]
             println("File.....: ${file.name}")
             println("Candidate: ${candidate.name}")
             if (file != candidate) {

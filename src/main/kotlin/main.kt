@@ -3,14 +3,16 @@ import androidx.compose.desktop.SwingPanel
 import androidx.compose.desktop.Window
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.Text
-import androidx.compose.runtime.*
+import androidx.compose.runtime.ExperimentalComposeApi
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.snapshots.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.InternalCoroutinesApi
 import kotlinx.coroutines.flow.collect
-import java.io.File
 import javax.swing.JScrollPane
 
 
@@ -26,28 +28,9 @@ fun main() = Window("Renamer Composer") {
             val state = remember { StateModel() }
 
             val counter = remember { mutableStateOf(false) }
-            val files: State<List<File>> = derivedStateOf {
-                counter.value
-                File(state.path).listFiles()
-                    ?.filter { !it.isHidden && it.isFile }
-                    ?.toList()
-                    ?.sortedBy { it.name }
-                    ?: emptyList()
-            }
-            val candidates: State<List<File>> = derivedStateOf {
-                val regex = state.pattern.toRegex()
-                val replace = state.replacement
-                files.value.map {
-                    if (state.pattern.isBlank()) it
-                    else {
-                        val newName = regex.replace(it.name, replace)
-                        File(it.parent, newName)
-                    }
-                }
-            }
             // model now accepts the wrapped types, not State<T>.
             // We use the LaunchedEffect below to scope a subscription that pushes updates to it.
-            val model = remember { FileTableModel(files.value, candidates.value) }
+            val model = remember { FileTableModel(state.files, state.candidates) }
 
             Row {
                 Text("Folder:", padding)
@@ -65,7 +48,7 @@ fun main() = Window("Renamer Composer") {
                 LaunchedEffect(model) {
                     // snapshotFlow runs the block and emits its result whenever
                     // any snapshot state read by the block was changed.
-                    snapshotFlow { Pair(files.value, candidates.value) }
+                    snapshotFlow { Pair(state.files, state.candidates) }
                         .collect {
                             model.files = it.first
                             model.candidates = it.second
@@ -77,7 +60,7 @@ fun main() = Window("Renamer Composer") {
                 SwingPanel(scrollingTable)
             }
             Row(Modifier.align(Alignment.End)) {
-                ApplyButton(files, candidates, counter, padding)
+                ApplyButton(state, counter, padding)
             }
         }
     }
