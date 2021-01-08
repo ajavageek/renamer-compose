@@ -23,45 +23,44 @@ fun main() = Window("Renamer Composer") {
 
             val padding = Modifier.padding(10.dp)
 
-            val path = remember { mutableStateOf(System.getProperty("user.home")) }
-            val pattern = remember { mutableStateOf("") }
-            val replacement = remember { mutableStateOf("") }
+            val state = remember { StateModel() }
+
             val counter = remember { mutableStateOf(false) }
             val files: State<List<File>> = derivedStateOf {
                 counter.value
-                File(path.value).listFiles()
+                File(state.path).listFiles()
                     ?.filter { !it.isHidden && it.isFile }
                     ?.toList()
                     ?.sortedBy { it.name }
                     ?: emptyList()
             }
             val candidates: State<List<File>> = derivedStateOf {
-                val regex = pattern.value.toRegex()
-                val replace = replacement.value
+                val regex = state.pattern.toRegex()
+                val replace = state.replacement
                 files.value.map {
-                    if (pattern.value.isBlank()) it
+                    if (state.pattern.isBlank()) it
                     else {
                         val newName = regex.replace(it.name, replace)
                         File(it.parent, newName)
                     }
                 }
             }
+            // model now accepts the wrapped types, not State<T>.
+            // We use the LaunchedEffect below to scope a subscription that pushes updates to it.
+            val model = remember { FileTableModel(files.value, candidates.value) }
 
             Row {
                 Text("Folder:", padding)
-                DirectoryTextField(path, padding.weight(1f, true))
-                FolderPickerButton(path, padding)
+                DirectoryTextField(state, padding.weight(1f, true))
+                FolderPickerButton(state, padding)
             }
             Row {
                 Text("Pattern:", padding)
-                PatternTextField(pattern, padding.weight(0.5f, true))
+                PatternTextField(state, padding.weight(0.5f, true))
                 Text("Replacement:", padding)
-                ReplacementTextField(replacement, padding.weight(0.5f, true))
+                ReplacementTextField(state, padding.weight(0.5f, true))
             }
             Row(padding.fillMaxWidth().fillMaxHeight(0.85f)) {
-                // model now accepts the wrapped types, not State<T>.
-                // We use the LaunchedEffect below to scope a subscription that pushes updates to it.
-                val model = remember { FileTableModel(files.value, candidates.value) }
                 // Monitor candidates and notify the model of updates
                 LaunchedEffect(model) {
                     // snapshotFlow runs the block and emits its result whenever

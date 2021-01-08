@@ -8,14 +8,13 @@ import javax.swing.JFileChooser
 import javax.swing.JFileChooser.APPROVE_OPTION
 
 @Composable
-fun FolderPickerButton(path: MutableState<String>, modifier: Modifier) {
+fun FolderPickerButton(state: StateModel, modifier: Modifier) {
     val chooseDirectory = {
         val fileChooser = JFileChooser().apply {
             fileSelectionMode = JFileChooser.DIRECTORIES_ONLY
         }
-        val (currentPath, setPathTo) = path
-        fileChooser.currentDirectory = File(currentPath)
-        if (fileChooser.showOpenDialog(null) == APPROVE_OPTION) setPathTo(fileChooser.selectedFile.path)
+        fileChooser.currentDirectory = File(state.path)
+        if (fileChooser.showOpenDialog(null) == APPROVE_OPTION) state.path = fileChooser.selectedFile.path
     }
     Button(
         content = { Text("Browse...") },

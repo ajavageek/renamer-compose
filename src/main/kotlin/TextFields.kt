@@ -1,31 +1,30 @@
 import androidx.compose.material.TextField
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableState
 import androidx.compose.ui.Modifier
 
 @Composable
-fun DirectoryTextField(path: MutableState<String>, modifier: Modifier) {
+fun DirectoryTextField(state: StateModel, modifier: Modifier) {
     TextField(
-        value = path.value,
-        onValueChange = { path.value = it },
+        value = state.path,
+        onValueChange = { state.path = it },
         modifier = modifier,
     )
 }
 
 @Composable
-fun PatternTextField(pattern: MutableState<String>, modifier: Modifier) {
+fun PatternTextField(state: StateModel, modifier: Modifier) {
     TextField(
-        value = pattern.value,
-        onValueChange = { pattern.value = it },
+        value = state.pattern,
+        onValueChange = { state.pattern = it },
         modifier = modifier,
     )
 }
 
 @Composable
-fun ReplacementTextField(replacement: MutableState<String>, modifier: Modifier) {
+fun ReplacementTextField(state: StateModel, modifier: Modifier) {
     TextField(
-        value = replacement.value,
-        onValueChange = { replacement.value = it },
+        value = state.replacement,
+        onValueChange = { state.replacement = it },
         modifier = modifier,
     )
 }
