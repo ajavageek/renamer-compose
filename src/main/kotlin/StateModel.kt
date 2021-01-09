@@ -1,5 +1,7 @@
 import androidx.compose.runtime.*
 import java.io.File
+import java.lang.IllegalArgumentException
+import java.util.regex.PatternSyntaxException
 
 class StateModel {
 
@@ -20,14 +22,18 @@ class StateModel {
 
     val candidates: List<File>
         get() {
-            val regex = pattern.toRegex()
-            return files.map {
-                if (pattern.isBlank()) it
-                else {
-                    val newName = regex.replace(it.name, replacement)
-                    File(it.parent, newName)
+            return try {
+                val regex = pattern.toRegex()
+                files.map {
+                    if (pattern.isBlank()) it
+                    else {
+                        val newName = regex.replace(it.name, replacement)
+                        File(it.parent, newName)
+                    }
                 }
             }
+            catch(e: PatternSyntaxException) { files }
+            catch(e: IllegalArgumentException) { files }
         }
 
     fun recompose() {
